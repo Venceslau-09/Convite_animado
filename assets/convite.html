@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Convite Especial Para Você!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7e6e6;
+            transition: background-color 0.5s ease;
+            color: #4a4a4a;
+            overflow: hidden;
+        }
+
+        #initialState {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 350px;
+            text-align: center;
+        }
+        #initialState img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #d81b60;
+        }
+
+        #messageState {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #messageState.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        #messageState img {
+            max-width: 60%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        #personalMessage {
+            font-size: 2.5em;
+            font-weight: bold;
+            line-height: 1.3;
+            margin: auto;
+            opacity: 0;
+            transition: opacity 2.3s ease-in-out, transform 0.5s ease-out;
+            transform: translateY(20px);
+            max-width: 80%;
+        }
+        #closeButton {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 100px;
+        }
+        #closeButton:hover {
+            background-color: #218838;
+        }
+
+        #petalasBackgroundGif {
+            position: absolute;
+            top: 10;
+            right: 10;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            transition: opacity 2s ease-in-out;
+        }
+        #openingGif {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: auto;
+            z-index: 5;
+            opacity: 1;
+            transition: opacity 1.5s ease-in-out;
+        }
+        #preInitialState {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f7e6e6;
+            color: #4a4a4a;
+            z-index: 2000;
+            transition: opacity 0.5s ease;
+        }
+        #preInitialState h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        #preInitialState p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        #preInitialState button {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #preInitialState button:hover {
+            background-color: #d81b60;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="preInitialState">
+        <h1>Bem-vindo!</h1>
+        <p>Clique para acessar a página e ativar o som.</p>
+        <button id="accessPageButton" onclick="accessPage()">Acessar Página</button>
+    </div>
+
+    <audio id="audioInicial" src="https://github.com/Venceslau-09/Convite_animado/raw/refs/heads/main/assets/audio/olha_msg.mp3" loop></audio>
+    <audio id="audioAbertura" src="https://github.com/Venceslau-09/Convite_animado/raw/refs/heads/main/assets/audio/sweater_weather_violin.mp3" loop></audio>
+
+    <div id="initialState">
+        <h1>Você tem (1) mensagem não lida!</h1>
+        <img src="https://raw.githubusercontent.com/Venceslau-09/Convite_animado/refs/heads/main/assets/gifs/carta_chegando_lateral.gif" alt="Carta chegando no correio" />
+        <button id="openButton" onclick="openInvite()">Abrir mensagem</button>
+    </div>
+
+    <div id="messageState">
+        <img id="petalasBackgroundGif" src="https://raw.githubusercontent.com/Venceslau-09/Convite_animado/refs/heads/main/assets/gifs/petalas_caindo.gif" alt="Pétalas caindo no fundo" />
+        <p id="personalMessage"><br>Bom diaa preta!!<br><br>Te pego hoje ás 19:00?<br></p>
+        <img id="openingGif" src="https://raw.githubusercontent.com/Venceslau-09/Convite_animado/refs/heads/main/assets/gifs/carta_abrindo.gif" alt="Carta abrindo" />
+        <button id="closeButton" onclick="closeInvite()">Fechar Mensagem</button>
+    </div>
+
+    <script>
+        // Referências aos elementos de áudio
+        const audioInicial = document.getElementById('audioInicial');
+        const audioAbertura = document.getElementById('audioAbertura');
+        
+        function accessPage() {
+            const preInitialState = document.getElementById('preInitialState');
+            const initialState = document.getElementById('initialState');
+            const audioInicial = document.getElementById('audioInicial');
+
+            preInitialState.style.opacity = '0'; // Inicia o fade-out da tela de pré-acesso
+            setTimeout(() => {
+            preInitialState.style.display = 'none'; // Esconde a tela de pré-acesso após o fade
+            initialState.style.display = 'flex'; // Mostra a tela inicial da carta
+
+        audioInicial.play().catch(error => {
+            console.log("Autoplay do áudio inicial bloqueado. Erro:", error);
+        });
+    }, 500); // Tempo para o fade-out da tela de pré-acesso
+}
+
+        function openInvite() {
+            document.getElementById('initialState').style.display = 'none';
+            document.body.style.backgroundColor = 'black';
+            document.body.style.color = 'white';
+            const messageState = document.getElementById('messageState');
+            messageState.style.display = 'flex';
+            void messageState.offsetWidth;
+            messageState.classList.add('visible');
+
+            const openingGif = document.getElementById('openingGif');
+            const personalMessage = document.getElementById('personalMessage');
+            const petalasBackgroundGif = document.getElementById('petalasBackgroundGif'); 
+
+            const currentSrc = openingGif.src;
+            openingGif.src = '';
+            openingGif.src = currentSrc;
+
+            personalMessage.style.opacity = '0';
+            personalMessage.style.transform = 'translateY(20px)';
+
+            const audioInicial = document.getElementById('audioInicial');
+            const audioAbertura = document.getElementById('audioAbertura');
+
+            audioInicial.pause();
+            audioInicial.currentTime = 0;
+            audioAbertura.play().catch(error => {
+                console.log("Autoplay do áudio de abertura bloqueado (improvável após clique). Erro:", error);
+            });
+
+            const fadeDuration = 1000; // Duração dos fades em milissegundos
+            const gifDisplayTime = 1500;
+
+            setTimeout(() => {
+                openingGif.style.opacity = '0';
+                personalMessage.style.opacity = '1';
+                personalMessage.style.transform = 'translateY(0)';
+                petalasBackgroundGif.style.opacity = '0.3';
+            }, gifDisplayTime);
+        }
+
+        function closeInvite() {
+            const messageState = document.getElementById('messageState');
+            messageState.classList.remove('visible');
+
+            const audioInicial = document.getElementById('audioInicial');
+            const audioAbertura = document.getElementById('audioAbertura');
+
+            audioAbertura.pause();
+            audioAbertura.currentTime = 0;
+            audioInicial.play().catch(error => {
+                console.log("Autoplay do áudio inicial bloqueado ao voltar. Erro:", error);
+            });
+
+            setTimeout(() => {
+                messageState.style.display = 'none';
+                document.body.style.backgroundColor = '#f7e6e6';
+                document.body.style.color = '#4a4a4a';
+                document.getElementById('initialState').style.display = 'flex';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
